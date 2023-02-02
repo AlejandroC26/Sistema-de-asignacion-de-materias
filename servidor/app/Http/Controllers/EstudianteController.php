@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Estudiante;
 use App\Models\AsignaturaProfesor;
 use App\Models\AsignaturaEstudiante;
-use Illuminate\Support\Facades\Validator;
+
 
 class EstudianteController extends Controller
 {
@@ -46,20 +48,60 @@ class EstudianteController extends Controller
         if(!$estudiante)
             return response()->json(['status'=> 'error', 'message'=> 'Estudiante no encontrado'], 400);
  
-        $asignatura_profesor = AsignaturaProfesor::find($request->id_asignatura_profesor);
+        $creditos = 0;
+        $asignaturas = [];
 
-        if(!$asignatura_profesor)
-            return response()->json(['status'=> 'error', 'message'=> 'Asignatura de profesor no encontrada'], 400);
+        foreach (json_decode($request->asignaturas) as $asignatura) {
 
-        $asignatura_estudiante = AsignaturaEstudiante::create([
-            'id_estudiante'          => $request->id_estudiante,
-            'id_asignatura_profesor' => $request->id_asignatura_profesor
-        ]);
+            $asignatura_profesor = DB::table('vista_asignatura_profesor')
+                ->where('id_ap', $asignatura->id_asignatura_profesor)->first();
+            
+            if($asignatura_profesor) {
+                $creditos += $asignatura_profesor->creditos;
+                array_push($asignaturas, $asignatura_profesor);
+            }
+        }
 
+        
+        if($creditos < 7) 
+            return response()->json([
+                'status'=> 'error', 
+                'message'=> 'No se cumplen los créditos mínimos para el registro'
+            ], 400);
+
+        $repetidos = [];
+
+        DB::beginTransaction();
+
+        foreach ($asignaturas as $asignatura) {
+
+            $asignatura_estudiante = DB::table('vista_asignatura_estudiantes')
+                ->where('id_asignatura', $asignatura->id_asignatura)
+                ->first();
+
+            if($asignatura_estudiante) array_push($repetidos, $asignatura_estudiante);
+
+            AsignaturaEstudiante::create([
+                'id_estudiante'          => $request->id_estudiante,
+                'id_asignatura_profesor' => $asignatura->id_ap,
+            ]);
+        }
+
+        if(count($repetidos) > 0) {
+            DB::rollback();
+            return response()->json([
+                'status'=> 'error', 
+                'message'=> 'Se están registrando asignaturas repetidas',
+                "data"=>$repetidos
+            ], 400);
+        } else {
+            DB::commit();
+        }
+        
         return response()->json([
             'status'  => 'success',
-            'message' => 'Asignatura de estudiante registrada exitosamente',
-            'data'    => $asignatura_estudiante,
+            'message' => 'Asignaturas de estudiante registradas exitosamente',
+            'data'    => $asignaturas,
         ]);
     }
 }
