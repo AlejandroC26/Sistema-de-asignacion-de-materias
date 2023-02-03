@@ -57,6 +57,7 @@ Route::controller(AsignaturaController::class)
     ->prefix('asignatura')
     ->group(function () {
     Route::get('', 'index');
+    Route::get('areas', 'showAreas');
     Route::post('register', 'register');
     Route::post('update/{id}', 'update');
 });
