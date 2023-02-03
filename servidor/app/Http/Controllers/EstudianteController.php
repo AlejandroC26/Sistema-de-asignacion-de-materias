@@ -13,6 +13,26 @@ use App\Models\AsignaturaEstudiante;
 
 class EstudianteController extends Controller
 {
+    public function index(Request $request)
+    {
+        $estudiantes = Estudiante::select(
+            'estudiantes.id',
+            'users.id as id_user', 
+            'users.documento', 
+            'users.nombres', 
+            'users.telefono',
+            'users.email',
+            'users.direccion',
+            'users.ciudad',
+            'estudiantes.semestre',
+        )
+            ->join('users', 'users.id', '=', 'estudiantes.id_user')
+            ->paginate();
+
+        return response()->json($estudiantes, 200);
+    }
+
+
     public function register(Request $request) 
     {
         $user = User::find($request->id_user);
@@ -38,6 +58,22 @@ class EstudianteController extends Controller
             'status'  => 'success',
             'message' => 'Estudiante registrado exitosamente',
             'data'    => $estudiante,
+        ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $estudiante = Estudiante::find($id);
+
+        if(!$estudiante)
+            return response()->json(['status'=> 'error', 'message'=> 'Estudiante no encontrado'], 400);
+        
+        $estudiante->semestre = $request->semestre;
+        $estudiante->save();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Estudiante actualizado exitosamente'
         ]);
     }
 

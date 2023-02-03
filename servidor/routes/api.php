@@ -41,6 +41,7 @@ Route::controller(EstudianteController::class)
     ->group(function () {
     Route::get('', 'index');
     Route::post('register', 'register');
+    Route::post('update/{id}', 'update');
     Route::post('course/assign', 'assignCourse');
 });
 

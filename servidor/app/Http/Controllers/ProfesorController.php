@@ -13,7 +13,18 @@ class ProfesorController extends Controller
 {
     public function index(Request $request)
     {
-        $profesores = Profesor::paginate();
+        $profesores = Profesor::select(
+            'profesores.id',
+            'users.id as id_user', 
+            'users.documento', 
+            'users.nombres', 
+            'users.telefono',
+            'users.email',
+            'users.direccion',
+            'users.ciudad',
+        )
+            ->join('users', 'users.id', '=', 'profesores.id_user')
+            ->paginate();
         return response()->json($profesores, 200);
     }
 

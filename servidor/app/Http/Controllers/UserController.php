@@ -64,7 +64,6 @@ class UserController extends Controller
             'direccion' => 'required|max:255',
             'ciudad' => 'required|max:255',
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:3',
         ]); 
 
         if($validator->fails()) 
@@ -76,7 +75,6 @@ class UserController extends Controller
         $user->direccion = $request->direccion;
         $user->ciudad    = $request->ciudad;
         $user->email     = $request->email;
-        $user->password  = Hash::make($request->password);
 
         $user->save();
 

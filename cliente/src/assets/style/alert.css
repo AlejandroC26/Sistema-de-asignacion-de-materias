@@ -1,0 +1,126 @@
+
+.danger-alert {
+    background: #ffc09b;
+    border-left: 8px solid #c73800;
+}
+.warning-alert {
+    background: #ffdb9b;
+    border-left: 8px solid #ffa502;
+}
+.success-alert {
+    background: rgb(185, 255, 182);
+    border-left: 8px solid #31aa31;
+}
+.alert{
+    padding: 20px 40px;
+    width: 95%;
+    max-width: 420px;
+    position: fixed;
+    right: 0;
+    top: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 10000;
+    box-sizing: border-box;
+}
+.alert.showAlert{
+    opacity: 1;
+    pointer-events: auto;
+}
+.alert.show{
+    animation: show_slide 1s ease forwards;
+}
+@keyframes show_slide {
+0%{
+    transform: translateX(100%);
+}
+40%{
+    transform: translateX(-10%);
+}
+80%{
+    transform: translateX(0%);
+}
+100%{
+    transform: translateX(-10px);
+}
+}
+.alert.hide{
+    animation: hide_slide 1s ease forwards;
+}
+@keyframes hide_slide {
+0%{
+    transform: translateX(-10px);
+}
+40%{
+    transform: translateX(0%);
+}
+80%{
+    transform: translateX(-10%);
+}
+100%{
+    transform: translateX(100%);
+}
+}
+.alert .icon-check-circle,
+.alert .icon-exclamation-solid,
+.alert .icon-exclamation-triangle{
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 30px;
+}
+.alert .msg{
+    padding: 0 20px;
+    font-size: 18px;
+}
+.alert .close-btn{
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 20px 18px;
+    cursor: pointer;
+}
+.alert .close-btn .fas{
+    font-size: 22px;
+    line-height: 40px;
+}
+/* ===DANGER=== */
+.danger-alert span,
+.danger-alert .msg,
+.danger-alert .close-btn .fas{
+    color: #c73800;
+}
+.danger-alert .close-btn {
+    background: #e28966;
+}
+.danger-alert .close-btn:hover{
+    background: #eb9a7a;
+}
+/* ====SUCESS=== */
+.success-alert span,
+.success-alert .msg,
+.success-alert .close-btn .fas{
+    color: #31aa31;
+}
+.success-alert .close-btn {
+    background: #8ae48a;
+}
+.success-alert .close-btn:hover{
+    background: #9ee49e;
+}
+/* ====WARNING=== */
+.warning-alert span,
+.warning-alert .msg,
+.warning-alert .close-btn .fas{
+    color: #ce8500;
+}
+.warning-alert .close-btn {
+    background: #ffd080;
+}
+.warning-alert .close-btn:hover{
+    background: #ffc766;
+}
