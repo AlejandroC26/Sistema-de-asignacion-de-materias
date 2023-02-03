@@ -1,0 +1,178 @@
+<template>
+    <div>
+        <Header/>
+        <div class="admin-container">
+        <section class="body-info-section">
+            <div class="content-section-info">
+                <Title :title="'Reportes'"/>
+                
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <td colspan="3"><center>Asignaturas por estudiantes</center></td>
+                        </tr>
+                        <tr>
+                            <td>Asignatura</td>
+                            <td>Estudiante</td>
+                            <td>Profesor</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="asignatura in asignaturas" :key="asignatura.id">
+                            <td>{{ asignatura.nombre_asignatura }}</td>
+                            <td>{{ asignatura.nombre_estudiante }}</td>
+                            <td>{{ asignatura.nombre_profesor }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        </div>
+        <Footer/>
+    </div>
+</template>
+<script>
+import Header from '@/components/AdminHeader.vue'
+import Footer from '@/components/AdminFooter.vue'
+import Title from '@/components/page/Title.vue'
+import {mapState} from 'vuex';
+import axios from 'axios';
+export default {
+    name: 'Dashboard',
+    components: {
+        Header,
+        Footer,
+        Title
+    },
+
+    data: function(){
+        return {
+            asignaturas: [],
+        }
+    },
+    
+    methods: {
+        isValidText(data){
+            var regex = new RegExp("^[a-zA-ZÀ-ÿ ]+$");
+            var key = data;
+            if (!regex.test(key)) return false
+            return true;
+        },
+        isValidEmail(email) {
+            let re = /^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i
+            if (re.test(email)) return true
+            else return false
+        },
+        generateUUID() {
+            var d = new Date().getTime();
+            var uuid = 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                var r = (d + Math.random() * 16) % 16 | 0;
+                d = Math.floor(d / 16);
+                return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            });
+            return uuid;
+        },
+        launchAlert(config){
+            if(!config.timeout) config.timeout = 2500;
+            const Toast = this.$swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: config.timeout,
+            })
+            Toast.fire({
+                icon: config.type,
+                title: config.title,
+                text: config.message,
+            })
+        },
+
+        listarReporte(){
+            axios.get("http://127.0.0.1:8000/api/asignatura/estudiantes", 
+            { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+            .then(({data})=> {
+                this.asignaturas = data;
+            }).catch(e => {
+                console.log(e.response)
+            })
+        },
+    },
+    computed: {
+        ...mapState(['sessionUser']),
+    },
+    mounted(){
+        this.listarReporte();
+    }
+}
+</script>
+<style scoped>
+    .row {
+        display: flex;
+        gap: .5rem;
+        justify-content: space-between;
+    }
+    .row > .col {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .row > .col input,
+    .row > .col select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: .3rem .5rem;
+        border: 0;
+        box-shadow: 0 0 1px #000000;
+        border-radius: 2px;
+    }
+    /* FORMULARIO */
+    .formulario-registro{
+        margin: 0 auto;
+        width: 95%;
+        top: -3rem;
+        padding: 2rem 1.5rem;
+        padding-top: 4rem;
+        max-width: 750px;
+        box-shadow: inset  0 0 2px #818181,
+                    0 0 5px #c9c9c9;
+        border-radius: 1rem;
+        position: absolute;
+        background: #fff;
+    }
+    .formulario-registro .titulo {
+        color: #fff;
+        position: absolute;
+        top: 1.5rem;
+        left: -.7rem;
+        background: #0056a0;
+        padding: .4rem 2.5rem;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+    }
+    .formulario-registro .cross-btn {
+        background: none;
+        border: 0;
+        font-size: 2rem;
+        color: #818181;
+        position: absolute;
+        right: 1.5rem;
+        top: 1.5rem;
+        cursor: pointer;
+    }
+
+    /* BOTÓN */
+    .btn-confirm button {
+        margin-top: 1rem;
+        background: none;
+        border: 0;
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        letter-spacing: .02rem;
+        color: #4a4a4a;
+        cursor: pointer;
+    }
+    .btn-confirm.primary button{
+        padding: .3rem .5rem;
+        border: dashed 2px #7f7f7f;
+    }
+
+</style>

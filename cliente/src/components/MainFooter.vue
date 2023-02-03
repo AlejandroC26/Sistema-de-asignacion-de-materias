@@ -6,7 +6,7 @@
     </section>
     <section class="footer">
         <div class="container-footer">
-            <div class="derechos-autor">Derechos de Autor 2021 - Colombia</div>
+            <div class="derechos-autor">Derechos de Autor 2023 - Colombia</div>
             <div class="legality">
                 <a href="#">Aviso de Privacidad</a>
                 <a href="#">Política de tratamiento de datos</a>

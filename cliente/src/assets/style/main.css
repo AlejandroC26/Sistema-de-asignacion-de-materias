@@ -101,6 +101,9 @@ span.link {
     cursor: pointer;
     color: #0275d8;
 }
+span.link.red{
+    color: #d81702;
+}
 span.link:hover {
     text-decoration: underline;
 }

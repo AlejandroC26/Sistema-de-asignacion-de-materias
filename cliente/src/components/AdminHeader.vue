@@ -4,12 +4,9 @@
         <header>
             <router-link to="/dashboard">
             <div class="logo-nav">
-                <div class="logo-img">
-                    AS
-                </div>
                 <div class="logo-slogan">
                     <div class="slogan">
-                        Asignación de Materias
+                        INICIO
                     </div>
                 </div>
             </div>
@@ -20,8 +17,9 @@
                 </div>
                 <ul>
                     <li><router-link to="/dashboard"><span class="icon-home"></span>Home</router-link></li>
-                    <li><router-link to="/profesores"><span class="icon-home"></span>Profesores</router-link></li>
-                    <li><router-link to="/estudiantes"><span class="icon-home"></span>Estudiantes</router-link></li>
+                    <li><router-link to="/profesores">Profesores</router-link></li>
+                    <li><router-link to="/estudiantes">Estudiantes</router-link></li>
+                    <li><router-link to="/asignaturas">Asignaturas</router-link></li>
                     
                 </ul>
             </nav>
@@ -128,6 +126,7 @@ export default {
 	height: 60px;
 	float: left;
 	display: flex;
+    margin-left: 1.2rem;
 }
 .logo-nav .slogan {
 	display: flex;

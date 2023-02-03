@@ -87,10 +87,13 @@ class EstudianteController extends Controller
         $creditos = 0;
         $asignaturas = [];
 
-        foreach (json_decode($request->asignaturas) as $asignatura) {
+        $arreglo = $request->asignaturas;
+        if(is_string($arreglo)) $arreglo = json_decode($request->asignaturas);
+
+        foreach ($arreglo as $asignatura) {
 
             $asignatura_profesor = DB::table('vista_asignatura_profesor')
-                ->where('id_ap', $asignatura->id_asignatura_profesor)->first();
+                ->where('id_ap', $asignatura)->first();
             
             if($asignatura_profesor) {
                 $creditos += $asignatura_profesor->creditos;
@@ -139,5 +142,12 @@ class EstudianteController extends Controller
             'message' => 'Asignaturas de estudiante registradas exitosamente',
             'data'    => $asignaturas,
         ]);
+    }
+
+    public function listCourses(Request $request, $id){
+        $asignaturas = DB::table('vista_asignatura_estudiantes')
+            ->where('id_estudiante', $id)
+            ->get();
+        return response()->json($asignaturas);
     }
 }

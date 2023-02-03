@@ -5,30 +5,30 @@
         <section class="body-info-section">
             <div class="content-section-info">
                 <Title :title="'Dashboard'"/>
-                <div class="content-section-info" v-if="sessionUser.rol == 'admin'">
+                <div class="content-section-info">
                     <div class="container-options">
                         <div class="box" style="--clr:#3498DB">
-                            <router-link to="/users">
+                            <router-link to="/profesores">
                                 <div class="box-content">
                                     <div class="icon">
                                         <span class="icon-user2"></span>
                                     </div>
                                     <div class="text">
-                                        <h3>Usuarios</h3>
-                                        <p>Gestión de usuarios</p>
+                                        <h3>Profesores</h3>
+                                        <p>Gestión de profesores</p>
                                     </div>
                                 </div>
                             </router-link>
                         </div>
                         <div class="box" style="--clr:#5DADE2">
-                            <router-link to="/groups">
+                            <router-link to="/estudiantes">
                                 <div class="box-content">
                                     <div class="icon">
                                         <span class="icon-users1"></span>
                                     </div>
                                     <div class="text">
-                                        <h3>Grupos</h3>
-                                        <p>{{sessionUser.groups.length}} Grupos</p>
+                                        <h3>Estudiantes</h3>
+                                        <p>Gestión de Estudiantes</p>
                                     </div>
                                 </div>
                             </router-link>
@@ -37,40 +37,39 @@
                 </div>
                 <div class="container-options mt-1">
                     <div class="box activity-box" style="--clr:#CB4335">
-                        <router-link to="library">
+                        <router-link to="asignaturas">
                             <div class="box-content">
-                                <div class="icon"><span class="icon-books"></span></div>
+                                <div class="icon"><span class="icon-book-reference"></span></div>
                                 <div class="text">
-                                    <h3>BIBLIOTECA</h3>
-                                    <p>Llénate de información y expande tu conocimiento con los documentos que britana tiene para brindarte</p>
+                                    <h3>Asignaturas</h3>
+                                    <p>Gestión de Asignaturas</p>
                                 </div>
                             </div>
                         </router-link>
                     </div>
                     <div class="box activity-box" style="--clr:#CB4335">
-                        <router-link to="tests">
+                        <router-link to="seleccion-asignaturas">
                             <div class="box-content">
-                                <div class="icon"><span class="icon-book-reference"></span></div>
+                                <div class="icon"><span class="icon-books"></span></div>
                                 <div class="text">
-                                    <h3>TEST</h3>
-                                    <p>Pon a prueba tu conocimiento con los test personalizados que Britana tiene para ti</p>
+                                    <h3>Selección de asignaturas</h3>
+                                    <p>Selecciona las asignaturas que deseas registrar este semestre.</p>
                                 </div>
                             </div>
                         </router-link>
                     </div>
                 </div>
-                <div style="margin-bottom: 50px;" v-if="sessionUser.groups.length > 0">
-                    <h2 style="margin-top: 30px; color: #CB4335">TUS GRUPOS</h2>
-                    <div class="group-container mt-1">
-                        <div class="group-user-box" style="--clr:#3498DB;"
-                        v-for="group in sessionUser.groups" :key="group.id"
-                        @click="redirectToGroup(group.id)">
-                            <div class="group-box-content">
-                                <div class="title-of-box">
-                                    <h1>{{ group.name }}</h1>
+                <div class="container-options mt-1">
+                    <div class="box activity-box" style="--clr:#239B56">
+                        <router-link to="reportes">
+                            <div class="box-content">
+                                <div class="icon"><span class="icon-analytics"></span></div>
+                                <div class="text">
+                                    <h3>Reportes</h3>
+                                    <p>Revisa los datos del sistema</p>
                                 </div>
                             </div>
-                        </div>
+                        </router-link>
                     </div>
                 </div>
             </div>
@@ -83,7 +82,7 @@
 import Header from '@/components/AdminHeader.vue'
 import Footer from '@/components/AdminFooter.vue'
 import Title from '@/components/page/Title.vue'
-import {mapState, mapActions, mapMutations} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 export default {
     name: 'Dashboard',
     components: {
@@ -226,6 +225,4 @@ export default {
     font-size: 3rem;
 }
 .container-options .activity-box .box-content .text {line-height: 1.4rem}
-.container-options .activity-box .box-content .text h3 {font-weight: 800}
-.container-options .activity-box .box-content .text p {font-size: 1.1em;}
 </style>

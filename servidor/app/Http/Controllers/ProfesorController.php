@@ -8,6 +8,7 @@ use App\Models\Profesor;
 use App\Models\Asignatura;
 use App\Models\AsignaturaProfesor;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class ProfesorController extends Controller
 {
@@ -81,5 +82,12 @@ class ProfesorController extends Controller
             'message' => 'Asignatura de profesor registrada exitosamente',
             'data' => $asignatura_profesor,
         ]);
+    }
+
+    public function listCourses(Request $request, $id){
+        $asignaturas = DB::table('vista_asignatura_profesor')
+            ->where('id_profesor', $id)
+            ->get();
+        return response()->json($asignaturas);
     }
 }

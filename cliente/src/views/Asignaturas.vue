@@ -4,7 +4,7 @@
         <div class="admin-container">
         <section class="body-info-section">
             <div class="content-section-info">
-                <Title :title="'Estudiantes'"/>
+                <Title :title="'Asignaturas'"/>
                 <div 
                     class="btn-confirm primary"
                     style="display: flex; justify-content: flex-end;"
@@ -19,8 +19,8 @@
                         v-if="register || update"
                         class="formulario-registro"
                     >
-                        <p class="titulo" v-if="update === false">Registro de estudiante</p>
-                        <p class="titulo" v-else>Actualizar estudiante</p>
+                        <p class="titulo" v-if="update === false">Registro de asignatura</p>
+                        <p class="titulo" v-else>Actualizar asignatura</p>
                         <button class="cross-btn"
                             @click="()=>{
                                 register = false;
@@ -28,53 +28,46 @@
                             }">×</button>
                         <div class="row">
                             <div class="col">
-                                <p>Documento</p>
-                                <input type="number" v-model="estudiante.documento">
+                                <p>Nombre</p>
+                                <input type="text" v-model="asignatura.nombre">
                             </div>
                             <div class="col">
-                                <p>Nombres</p>
-                                <input type="text" v-model="estudiante.nombres">
-                            </div>
-                            <div class="col">
-                                <p>Teléfono</p>
-                                <input type="text" v-model="estudiante.telefono">
+                                <p>Tipo</p>
+                                <select v-model="asignatura.tipo">
+                                    <option value="electiva">Electiva</option>
+                                    <option value="obligatoria">Obligatoria</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <p>Dirección</p>
-                                <input type="text" v-model="estudiante.direccion">
+                                <p>Créditos</p>
+                                <input type="number" v-model="asignatura.creditos">
                             </div>
                             <div class="col">
-                                <p>Ciudad</p>
-                                <input type="text" v-model="estudiante.ciudad">
-                            </div>
-                            <div class="col">
-                                <p>Semestre</p>
-                                <input type="number" v-model="estudiante.semestre">
+                                <p>Area</p>
+                                <select v-model="asignatura.id_area">
+                                    <option 
+                                        v-for="area in areas" :key="area.id"
+                                        :value="area.id"
+                                    >{{ area.nombre }}</option>
+                                </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <p>Email</p>
-                                <input type="text" v-model="estudiante.email">
-                            </div>
-                            <div 
-                                v-if="update === false"
-                                class="col"
-                            >
-                                <p>Contraseña</p>
-                                <input type="number" v-model="estudiante.password">
+                                <p>Descripción</p>
+                                <textarea cols="30" rows="10" v-model="asignatura.descripcion"></textarea>
                             </div>
                         </div>
     
                         <div class="btn-confirm" v-if="update === false">
-                            <button @click="registrarEstudiante(estudiante)">
+                            <button @click="registrarAsignatura(asignatura)">
                                 Registrar
                             </button>
                         </div>
                         <div class="btn-confirm" v-else>
-                            <button @click="actualizarEstudiante(estudiante)">
+                            <button @click="actualizarAsignatura(asignatura)">
                                 Guardar
                             </button>
                         </div>
@@ -85,26 +78,22 @@
                 <table class="styled-table">
                     <thead>
                         <tr>
-                            <td>Documento</td>
-                            <td>Nombres</td>
-                            <td>Teléfono</td>
-                            <td>Email</td>
-                            <td>Dirección</td>
-                            <td>Ciudad</td>
-                            <td>Semestre</td>
+                            <td>Nombre</td>
+                            <td>Descripción</td>
+                            <td>Créditos</td>
+                            <td>Area</td>
+                            <td>Tipo</td>
                             <td>Acción</td>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="estudiante in estudiantes" :key="estudiante.id">
-                            <td>{{ estudiante.documento }}</td>
-                            <td>{{ estudiante.nombres }}</td>
-                            <td>{{ estudiante.telefono }}</td>
-                            <td>{{ estudiante.email }}</td>
-                            <td>{{ estudiante.direccion }}</td>
-                            <td>{{ estudiante.ciudad }}</td>
-                            <td>{{ estudiante.semestre }}</td>
-                            <td><span class="link" @click="cargarEstudiante(estudiante)">Editar</span></td>
+                        <tr v-for="asignatura in asignaturas" :key="asignatura.id">
+                            <td>{{ asignatura.nombre }}</td>
+                            <td>{{ asignatura.descripcion }}</td>
+                            <td>{{ asignatura.creditos }}</td>
+                            <td>{{ asignatura.area_nombre }}</td>
+                            <td>{{ asignatura.tipo }}</td>
+                            <td><span class="link" @click="cargarAsignatura(asignatura)">Editar</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -114,7 +103,7 @@
                             href="#" 
                             v-for="link in links" :key="generateUUID(link)"
                             :class="{'active': link.active}"
-                            @click="listarEstudiantes(link.url)"
+                            @click="listarAsignaturas(link.url)"
                         ><span v-html="link.label"></span></a>
                     </div>
                 </div>
@@ -143,19 +132,16 @@ export default {
             register: false,
             update: false,
 
+            areas: [],
             links: [],
-            estudiantes: [],
-            estudiante: {
+            asignaturas: [],
+            asignatura: {
                 id: '',
-                documento: '123',
-                nombres: 'Alejandro',
-                telefono: '313',
-                email: 'cubillosalejandro122@gmail.com',
-                direccion: 'Cra 16',
-                ciudad: 'Pitalito',
-                semestre: '3',
-                password: '123',
-                id_estudiante: '',
+                nombre: '',
+                descripcion: '',
+                tipo: 'electiva',
+                creditos: '',
+                id_area: ''
             }
         }
     },
@@ -196,69 +182,55 @@ export default {
             })
         },
 
-        listarEstudiantes(url){
-            if(!url) url = 'http://127.0.0.1:8000/api/estudiante';
+        listarAsignaturas(url){
+            if(!url) url = 'http://127.0.0.1:8000/api/asignatura';
             axios.get(url, 
             { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
             .then(({data})=> {
                 this.links = data.links;
-                this.estudiantes = data.data;
+                this.asignaturas = data.data;
             }).catch(e => {
                 console.log(e.response)
             })
         },
-
-        cargarEstudiante(data) {
+        listarAreas(){
+            axios.get('http://127.0.0.1:8000/api/asignatura/areas', 
+            { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+            .then(({data})=> {
+                this.areas = data;
+            }).catch((e)=>console.log(e.response))
+        },
+        cargarAsignatura(data) {
             this.update = true;
             this.register = false;
 
-            this.estudiante.id = data.id_user;
-            this.estudiante.documento = data.documento;
-            this.estudiante.nombres = data.nombres;
-            this.estudiante.telefono = data.telefono;
-            this.estudiante.email = data.email;
-            this.estudiante.direccion = data.direccion;
-            this.estudiante.ciudad = data.ciudad;
-            this.estudiante.semestre = data.semestre;
-            this.estudiante.password = data.password;
-            this.estudiante.id_estudiante = data.id;
+            this.asignatura.id = data.id;
+            this.asignatura.nombre = data.nombre;
+            this.asignatura.descripcion = data.descripcion;
+            this.asignatura.tipo = data.tipo;
+            this.asignatura.creditos = data.creditos;
+            this.asignatura.id_area = data.id_area;
         },
 
         limpiarFormulario(){
             this.update = false;
-            this.estudiante.id = '';
-            this.estudiante.documento = '';
-            this.estudiante.nombres = '';
-            this.estudiante.telefono = '';
-            this.estudiante.email = '';
-            this.estudiante.direccion = '';
-            this.estudiante.ciudad = '';
-            this.estudiante.semestre = '';
-            this.estudiante.password = '';
-            this.estudiante.id_estudiante = '';
+            this.asignatura.id = '';
+            this.asignatura.nombre = '';
+            this.asignatura.descripcion = '';
+            this.asignatura.tipo = 'electiva';
+            this.asignatura.creditos = '';
+            this.asignatura.id_area = this.areas[0].id;
         },
 
-        async registrarEstudiante(data){
-            if(!this.isValidText(data.nombres))
-                return this.launchAlert({type: 'warning', title: '¡El nombre no puede contener carácteres especiales!'})
-
-            if(!this.isValidEmail(data.email))
-                return this.launchAlert({type: 'warning', title: '¡El correo no es válido!'})
-
+        async registrarAsignatura(data){
             try {
-
-                let user = await axios.post('http://127.0.0.1:8000/api/user/register', data, 
+                axios.post('http://127.0.0.1:8000/api/asignatura/register', data, 
                 { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
-
-                axios.post('http://127.0.0.1:8000/api/estudiante/register', {
-                    id_user: user.data.data.id,
-                    semestre: data.semestre
-                }, { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
                 .then(() => {
                     this.register = false;
-                    this.limpiarFormulario();
-                    this.listarEstudiantes();
-                    return this.launchAlert({type: 'success', title: '¡Estudiante registrado!'})
+                    this.limpiarFormulario()
+                    this.listarAsignaturas();
+                    return this.launchAlert({type: 'success', title: '¡Asignatura registrada!'})
                 })
                 .catch(e => {
                     console.log(e.response)
@@ -267,24 +239,14 @@ export default {
                 console.log(error.response)
             }
         },
-        async actualizarEstudiante(data){
-            if(!this.isValidText(data.nombres))
-                return this.launchAlert({type: 'warning', title: '¡El nombre no puede contener carácteres especiales!'})
-
-            if(!this.isValidEmail(data.email))
-                return this.launchAlert({type: 'warning', title: '¡El correo no es válido!'})
-
+        async actualizarAsignatura(data){
             try {
-                await axios.post('http://127.0.0.1:8000/api/user/update/'+data.id, data, 
-                { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
-                
-                await axios.post('http://127.0.0.1:8000/api/estudiante/update/'+data.id_estudiante, 
-                { semestre: data.semestre },
+                await axios.post('http://127.0.0.1:8000/api/asignatura/update/'+data.id, data, 
                 { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
 
-                this.listarEstudiantes();
+                this.listarAsignaturas();
                 this.limpiarFormulario();
-                return this.launchAlert({type: 'success', title: '¡Estudiante actualizado!'})
+                return this.launchAlert({type: 'success', title: '¡Asignatura actualizada!'})
 
             } catch (error) {
                 console.log(error.response)
@@ -299,7 +261,8 @@ export default {
         ...mapState(['sessionUser']),
     },
     mounted(){
-        this.listarEstudiantes();
+        this.listarAsignaturas();
+        this.listarAreas();
     }
 }
 </script>
@@ -313,7 +276,9 @@ export default {
         width: 100%;
         box-sizing: border-box;
     }
-    .row > .col input {
+    .row > .col input,
+    .row > .col textarea,
+    .row > .col select {
         width: 100%;
         box-sizing: border-box;
         padding: .3rem .5rem;

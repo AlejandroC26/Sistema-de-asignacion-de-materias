@@ -27,6 +27,8 @@ return new class extends Migration
                     ue.nombres as nombre_estudiante,
                     ap.id_asignatura,
                     a.nombre as nombre_asignatura,
+                    a.descripcion,
+                    a.tipo,
                     a.creditos,
                     ap.id_profesor,
                     up.nombres as nombre_profesor

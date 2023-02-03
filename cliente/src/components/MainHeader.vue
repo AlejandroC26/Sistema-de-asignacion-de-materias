@@ -3,12 +3,9 @@
         <div id="wrapper-menu"></div>
         <header>
             <div class="logo-nav">
-                <div class="logo-img">
-                    AS
-                </div>
                 <div class="logo-slogan">
-                    <div class="slogan">
-                        Asignación de Materias
+                    <div class="slogan" style="color: #72737d;">
+                        ASIGNACIÓN DE MATERIAS
                     </div>
                 </div>
             </div>

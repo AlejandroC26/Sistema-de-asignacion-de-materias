@@ -33,6 +33,24 @@ const routes = [
     component: () => import('../views/Profesores'),
     meta: { protectedRoute: false }
   },
+  {
+    path: '/asignaturas',
+    name: 'Asignaturas',
+    component: () => import('../views/Asignaturas'),
+    meta: { protectedRoute: false }
+  },
+  {
+    path: '/seleccion-asignaturas',
+    name: 'SeleccionAsignaturas',
+    component: () => import('../views/SeleccionAsignaturas'),
+    meta: { protectedRoute: false }
+  },
+  {
+    path: '/reportes',
+    name: 'Reportes',
+    component: () => import('../views/Reportes'),
+    meta: { protectedRoute: false }
+  },
   { path: "*", component: () => import('../views/404'), }
 ]
 

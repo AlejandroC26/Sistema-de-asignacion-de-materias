@@ -22,7 +22,7 @@ return new class extends Migration
                   ->constrained('areas_conocimiento')
                   ->cascadeOnUpdate()
                   ->cascadeOnDelete();
-            $table->enum('tipo', ['electiva','Obligatoria'])->default('electiva');
+            $table->enum('tipo', ['electiva','obligatoria'])->default('electiva');
             $table->timestamps();
         });
     }

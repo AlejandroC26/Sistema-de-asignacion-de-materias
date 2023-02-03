@@ -11,10 +11,14 @@
                 >
                     <button @click="()=>{
                         register = true;
+                        update = false;
+                        asignatura = false;
                         limpiarFormulario();
-                    }" v-if="!register && !update">Nuevo registro</button>
+                    }">Nuevo registro</button>
                 </div>
-                <div style="display: flex; justify-content: center;">
+
+                <!-- FORMULARIO DE REGISTRO -->
+                <div style="display: flex; justify-content: center; position: relative;">
                     <div 
                         v-if="register || update"
                         class="formulario-registro"
@@ -77,6 +81,46 @@
                     </div>
                 </div>
 
+                <!-- ASIGNACIÓN DE MATERIAS -->
+                <div style="display: flex; justify-content: center; position: relative;">
+                    <div 
+                        v-if="asignatura"
+                        class="formulario-registro"
+                    >
+                        <p class="titulo">ASIGNAR MATERIAS</p>
+                        <button class="cross-btn" @click="asignatura=false;">×</button>
+                        <div class="row">
+                            <div class="col">
+                                <p><b>Nombre:</b> {{ profesor.nombres }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col" style="display: flex;">
+                                <select v-model="id_asignatura">
+                                    <option 
+                                        v-for="asignatura in asignaturas" 
+                                        :key="asignatura.id" 
+                                        :value="asignatura.id" v-html="asignatura.nombre"></option>
+                                </select>
+                                <button style="padding: 0.3rem 0.5rem; box-shadow: 0 0 1px #000000; border: none; cursor: pointer;"
+                                @click="registrarAsignatura()">Agregar</button>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: .5rem;">
+                            <div class="col">
+                                <p><b>ASIGNATURAS</b></p>
+                            </div>
+                        </div>
+                        <div v-if="cursos.length > 0">
+                            <div v-for="curso in cursos" :key="curso.id" style="margin: 1rem 1.2rem;">
+                                Nombre: {{ curso.nombre_asignatura }} <br> 
+                                Creditos: {{ curso.creditos }}
+                                <hr>
+                            </div>
+                        </div>
+                        <div style="margin: 1rem 1.2rem;" v-else>No hay asignaturas asignadas</div>
+                    </div>
+                </div>
 
                 <table class="styled-table">
                     <thead>
@@ -98,7 +142,23 @@
                             <td>{{ profesor.email }}</td>
                             <td>{{ profesor.direccion }}</td>
                             <td>{{ profesor.ciudad }}</td>
-                            <td><span class="link" @click="cargarProfesor(profesor)">Editar</span></td>
+                            <td>
+                                <div style="display: flex; gap: .5rem;">
+                                    <span class="link" @click="()=>{
+                                        update = true;
+                                        register = false;
+                                        asignatura = false;
+                                        cargarProfesor(profesor)
+                                    }">Editar</span>
+                                    <span class="link red" @click="()=>{
+                                        update = false;
+                                        register = false;
+                                        asignatura = true;
+                                        cargarProfesor(profesor);
+                                        listarAsignaturasProfesor(profesor.id)
+                                    }">Asignaturas</span>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -137,8 +197,13 @@ export default {
             register: false,
             update: false,
 
+            asignatura: false,
+            id_asignatura: '',
+
             links: [],
             profesores: [],
+            asignaturas: [],
+            cursos: [],
             profesor: {
                 id: '',
                 documento: '123',
@@ -149,7 +214,8 @@ export default {
                 ciudad: 'Pitalito',
                 password: '123',
                 id_profesor: '',
-            }
+            },
+            
         }
     },
     
@@ -196,15 +262,28 @@ export default {
             .then(({data})=> {
                 this.links = data.links;
                 this.profesores = data.data;
+            }).catch(e => console.log(e.response) )
+        },
+
+        listarAsignaturas(){
+            axios.get("http://127.0.0.1:8000/api/asignatura", 
+            { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+            .then(({data})=> {
+                this.id_asignatura = data.data[0].id;
+                this.asignaturas = data.data;
             }).catch(e => {
                 console.log(e.response)
             })
         },
+        listarAsignaturasProfesor(id){
+            axios.get(`http://127.0.0.1:8000/api/profesor/${id}/courses`,
+            { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+            .then(({data})=> {
+                this.cursos = data;
+            }).catch( e => console.log(e.response) )
+        },  
 
         cargarProfesor(data) {
-            this.update = true;
-            this.register = false;
-
             this.profesor.id = data.id_user;
             this.profesor.documento = data.documento;
             this.profesor.nombres = data.nombres;
@@ -277,16 +356,25 @@ export default {
                 console.log(error.response)
             }
             
+        },
+        async registrarAsignatura(){
+            axios.post('http://127.0.0.1:8000/api/profesor/course/assign', {
+                id_profesor: this.profesor.id_profesor,
+                id_asignatura: this.id_asignatura
+            }, { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+            .then(()=> {
+                this.id_asignatura = this.asignaturas[0].id;
+                this.listarAsignaturasProfesor(this.profesor.id_profesor)
+                return this.launchAlert({type: 'success', title: '¡Materia asignada exitosamente!'})
+            }).catch(e=>console.log(e.response))
         }
-
-
-
     },
     computed: {
         ...mapState(['sessionUser']),
     },
     mounted(){
         this.listarProfesores();
+        this.listarAsignaturas();
     }
 }
 </script>
@@ -300,7 +388,8 @@ export default {
         width: 100%;
         box-sizing: border-box;
     }
-    .row > .col input {
+    .row > .col input,
+    .row > .col select {
         width: 100%;
         box-sizing: border-box;
         padding: .3rem .5rem;
@@ -311,7 +400,8 @@ export default {
     /* FORMULARIO */
     .formulario-registro{
         margin: 0 auto;
-        width: 100%;
+        width: 95%;
+        top: -3rem;
         padding: 2rem 1.5rem;
         padding-top: 4rem;
         max-width: 750px;

@@ -7,19 +7,44 @@ use App\Models\Asignatura;
 use App\Models\AreaConocimiento;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class AsignaturaController extends Controller
 {
     public function index(Request $request)
     {
-       $asignaturas = Asignatura::paginate();
+        $asignaturas = Asignatura::select(
+            "asignaturas.id",
+            "asignaturas.nombre",
+            "asignaturas.descripcion",
+            "asignaturas.creditos",
+            "asignaturas.tipo",
+            "asignaturas.id_area",
+            "areas_conocimiento.nombre as area_nombre",
+        )->join('areas_conocimiento', 'areas_conocimiento.id', '=', 'asignaturas.id_area')
+        ->paginate();
        return response()->json($asignaturas, 200); 
     }
 
+    public function listTeachers(Request $request, $id)
+    {
+        $asignaturas = DB::table('vista_asignatura_profesor')
+            ->where('id_asignatura', $id)
+            ->get();
+        return response()->json($asignaturas);
+    }
+
+
     public function showAreas(Request $request)
     {
-        $areas = AreaConocimiento::paginate();
+        $areas = AreaConocimiento::all();
         return response()->json($areas, 200); 
+    }
+
+    public function listStudents(Request $request){
+        $asignaturas = DB::table('vista_asignatura_estudiantes')->get();
+        return response()->json($asignaturas);
     }
 
     public function register(Request $request)

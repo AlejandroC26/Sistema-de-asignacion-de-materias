@@ -43,6 +43,7 @@ Route::controller(EstudianteController::class)
     Route::post('register', 'register');
     Route::post('update/{id}', 'update');
     Route::post('course/assign', 'assignCourse');
+    Route::get('/{id}/courses', 'listCourses');
 });
 
 Route::controller(ProfesorController::class)
@@ -51,6 +52,7 @@ Route::controller(ProfesorController::class)
     Route::get('', 'index');
     Route::post('register', 'register');
     Route::post('course/assign', 'assignCourse');
+    Route::get('/{id}/courses', 'listCourses');
 });
 
 Route::controller(AsignaturaController::class)
@@ -58,6 +60,8 @@ Route::controller(AsignaturaController::class)
     ->group(function () {
     Route::get('', 'index');
     Route::get('areas', 'showAreas');
+    Route::get('estudiantes', 'listStudents');
     Route::post('register', 'register');
     Route::post('update/{id}', 'update');
+    Route::get('/{id}/profesor', 'listTeachers');
 });
