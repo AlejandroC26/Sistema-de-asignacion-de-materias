@@ -5,7 +5,16 @@
         <section class="body-info-section">
             <div class="content-section-info">
                 <Title :title="'Reportes'"/>
-                
+                <div style="display: flex; justify-content: flex-end;">
+                    <download-excel
+                        class="btn-download"
+                        :data="asignaturas"
+                        :fields="json_fields"
+                        name="estudiantes_asignaturas.xls"
+                        >
+                        Download Excel
+                    </download-excel>
+                </div>
                 <table class="styled-table">
                     <thead>
                         <tr>
@@ -37,17 +46,23 @@ import Footer from '@/components/AdminFooter.vue'
 import Title from '@/components/page/Title.vue'
 import {mapState} from 'vuex';
 import axios from 'axios';
+
 export default {
     name: 'Dashboard',
     components: {
         Header,
         Footer,
-        Title
+        Title,
     },
 
     data: function(){
         return {
             asignaturas: [],
+            json_fields: {
+                "Asignatura": "nombre_asignatura",
+                "Estudiante": "nombre_estudiante",
+                "Profesor": "nombre_profesor",
+            },
         }
     },
     
@@ -159,20 +174,12 @@ export default {
         cursor: pointer;
     }
 
-    /* BOTÓN */
-    .btn-confirm button {
-        margin-top: 1rem;
-        background: none;
-        border: 0;
-        text-transform: uppercase;
-        font-size: 1.2rem;
-        letter-spacing: .02rem;
-        color: #4a4a4a;
+    .btn-download {
+        border: solid 2px #008037;
+        padding: .5rem 1rem;
+        color: #008037;
+        background: #ffffff;
+        border-radius: 2px;
         cursor: pointer;
     }
-    .btn-confirm.primary button{
-        padding: .3rem .5rem;
-        border: dashed 2px #7f7f7f;
-    }
-
 </style>

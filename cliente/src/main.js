@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueSweetalert2 from 'vue-sweetalert2';
-
+import JsonExcel from "vue-json-excel";
+ 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
@@ -16,6 +17,8 @@ Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.use(VueSweetalert2);
 Vue.use(require('vue-moment'));
+Vue.component("downloadExcel", JsonExcel);
+
 new Vue({
   mode: 'history',
   router,
