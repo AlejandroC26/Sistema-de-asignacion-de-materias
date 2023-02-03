@@ -5,6 +5,16 @@
         <section class="body-info-section">
             <div class="content-section-info">
                 <Title :title="'Reportes'"/>
+                <div class="row">
+                    <div class="col">
+                        <canvas id="profesor-chart"></canvas>
+                    </div>
+                    <div class="col">
+                        <canvas id="asignatura-chart"></canvas>
+                    </div>
+                </div>
+
+
                 <div style="display: flex; justify-content: flex-end;">
                     <download-excel
                         class="btn-download"
@@ -47,6 +57,8 @@ import Title from '@/components/page/Title.vue'
 import {mapState} from 'vuex';
 import axios from 'axios';
 
+import Chart from 'chart.js'
+
 export default {
     name: 'Dashboard',
     components: {
@@ -62,6 +74,64 @@ export default {
                 "Asignatura": "nombre_asignatura",
                 "Estudiante": "nombre_estudiante",
                 "Profesor": "nombre_profesor",
+            },
+            profesoresChartData: {
+                type: "bar",
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Número de Estudiantes",
+                            data: [],
+                            backgroundColor: "#6cb1ec",
+                            borderColor: "#0275d8",
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    lineTension: 1,
+                    scales: {
+                    yAxes: [
+                        {
+                        ticks: {
+                            beginAtZero: true,
+                            padding: 25
+                        }
+                        }
+                    ]
+                    }
+                }
+            },
+            asignaturaCharData: {
+                type: "bar",
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: "Número de Estudiantes",
+                            data: [],
+                            backgroundColor: "#d47287",
+                            borderColor: "#ce002d",
+                            borderWidth: 3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    lineTension: 1,
+                    scales: {
+                    yAxes: [
+                        {
+                        ticks: {
+                            beginAtZero: true,
+                            padding: 25
+                        }
+                        }
+                    ]
+                    }
+                }
             },
         }
     },
@@ -101,13 +171,81 @@ export default {
                 text: config.message,
             })
         },
+        agruparPorProfesor(data){
+            let nuevoObjeto = {}
+            //Recorremos el arreglo 
+            data.forEach( x => {
+                if( !nuevoObjeto.hasOwnProperty(x.id_profesor)){
+                    nuevoObjeto[x.id_profesor] = {
+                        nombre: x.nombre_profesor,
+                        estudiantes: []
+                    }
+                }
+                //Agregamos los datos de profesionales. 
+                nuevoObjeto[x.id_profesor].estudiantes.push({
+                    ...x
+                })
+            })
+            return Object.values(nuevoObjeto);
+        },
+
+        agruparPorAsignatura(data){
+            let nuevoObjeto = {}
+            //Recorremos el arreglo 
+            data.forEach( x => {
+                if( !nuevoObjeto.hasOwnProperty(x.id_asignatura)){
+                    nuevoObjeto[x.id_asignatura] = {
+                        nombre: x.nombre_asignatura,
+                        estudiantes: []
+                    }
+                }
+                //Agregamos los datos de profesionales. 
+                nuevoObjeto[x.id_asignatura].estudiantes.push({
+                    ...x
+                })
+            })
+            return Object.values(nuevoObjeto);
+        },
+
 
         listarReporte(){
             axios.get("http://127.0.0.1:8000/api/asignatura/estudiantes", 
             { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
             .then(({data})=> {
                 this.asignaturas = data;
+                //Creamos un nuevo objeto donde vamos a almacenar por ciudades. 
+                let profesores = this.agruparPorProfesor(data);
+                let asignaturas = this.agruparPorAsignatura(data);
+
+                let labelsProfesor = [];
+                let totalesProfesor = [];
+
+                let labelsAsignatura = [];
+                let totalesAsignatura = [];
+
+                profesores.forEach(x => {
+                    labelsProfesor.push(x.nombre);
+                    totalesProfesor.push(x.estudiantes.length);
+                })
+                
+                asignaturas.forEach(x => {
+                    labelsAsignatura.push(x.nombre);
+                    totalesAsignatura.push(x.estudiantes.length);
+                })
+
+                this.profesoresChartData.data.labels = labelsProfesor;
+                this.profesoresChartData.data.datasets[0].data = totalesProfesor;
+
+                this.asignaturaCharData.data.labels = labelsAsignatura;
+                this.asignaturaCharData.data.datasets[0].data = totalesAsignatura;
+
+                const ctxP = document.getElementById('profesor-chart');
+                new Chart(ctxP, this.profesoresChartData);
+
+                const ctxA = document.getElementById('asignatura-chart');
+                new Chart(ctxA, this.asignaturaCharData);
             }).catch(e => {
+                console.log(e)
                 console.log(e.response)
             })
         },

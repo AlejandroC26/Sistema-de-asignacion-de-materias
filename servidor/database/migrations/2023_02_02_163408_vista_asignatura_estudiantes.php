@@ -44,7 +44,7 @@ return new class extends Migration
                 JOIN users ue 
                     ON ue.id = ae.id_estudiante
                 JOIN users up
-                    ON up.id = ap.id_profesor;
+                    ON up.id = p.id_user;
             SQL;
     }
    

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('ciudad');
             $table->string('email')->unique();
             $table->string('password');
+            $table->enum('tipo', ['admin','usuario'])->default('usuario');
             $table->timestamps();
         });
     }

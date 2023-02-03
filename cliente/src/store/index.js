@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import axios from 'axios'
 import Vuex from 'vuex'
 import auth from '../modules/auth'
 
@@ -9,20 +10,29 @@ export default new Vuex.Store({
         token: null,
         sessionUser: {
             id: '',
-            name: '',
-            email: '',
-            groups: '',
-            password: '',
-            rol: 'student',
-            createdAt: '',
-            updatedAt: ''
+            nombres: '',
+            permisos: {
+                admin: false,
+                profesor: false,
+                estudiante: false
+            }
         },
-        alphabet: ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","u","v","w","x","y","z"],
     },
     mutations: {
         setToken(state, payload) {
-            state.token = payload
+            state.token = payload;
         },
+        loadSessionUser(state, payload){
+            if(!state.token) return;
+            axios.get('http://127.0.0.1:8000/api/auth/me', 
+            { headers: { "Authorization": "Bearer " + state.token} })
+            .then(({data}) => {
+                state.sessionUser.id = data.data.id;
+                state.sessionUser.nombres = data.data.nombres;
+                state.sessionUser.permisos = data.permisos;
+                
+            }).catch(e => console.log(e.response))
+        }
     },
     actions: {
         readToken({commit}){

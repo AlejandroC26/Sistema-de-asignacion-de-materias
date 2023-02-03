@@ -19,6 +19,17 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([ 
+            'documento'=> '312',
+            'nombres' => 'Admin',
+            'telefono' => '315',
+            'direccion' => 'Cra1a',
+            'ciudad' => 'Pitalito',
+            'email' => 'admin@gmail.com',
+            'tipo' => 'admin',
+            'password' => Hash::make('123'),
+        ]);
+
+        User::create([ 
             'documento'=> '1116912149',
             'nombres' => 'Alexander Guzmán',
             'telefono' => '3134039711',
@@ -29,7 +40,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([ 
-            'documento'=> '1116912149',
+            'documento'=> '1116912143',
             'nombres' => 'Miller Cubillos',
             'telefono' => '3107602311',
             'direccion' => 'Cra 17 # 1 - 27',
@@ -39,7 +50,7 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([ 
-            'documento'=> '1116912148',
+            'documento'=> '11169135148',
             'nombres' => 'Alejandro Cubillos',
             'telefono' => '3134029719',
             'direccion' => 'Cra 17 # 1 - 27',
@@ -48,9 +59,9 @@ class UserSeeder extends Seeder
             'password' => Hash::make('123'),
         ]);
 
-        Profesor::create(['id_user' => 1]);
         Profesor::create(['id_user' => 2]);
-        Estudiante::create(['id_user'=> 1, 'semestre' => 1]);
+        Profesor::create(['id_user' => 3]);
+        Estudiante::create(['id_user'=> 4, 'semestre' => 1]);
         
         
     }

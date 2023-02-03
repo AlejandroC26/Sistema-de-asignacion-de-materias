@@ -383,7 +383,6 @@ export default {
 .logo_sm .logo_img {
 	width: 70px;
 	height: 70px;
-	background-image: url('../assets/img/logo/Original_logo_340x340.jpg');
 	background-size: cover;
 	margin-right: 30px;
 }

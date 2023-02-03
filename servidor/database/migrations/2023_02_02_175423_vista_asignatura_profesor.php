@@ -28,14 +28,14 @@ return new class extends Migration
                     a.creditos,
                     ap.id_profesor,
                     up.nombres as nombre_profesor
-                FROM `asignatura_profesor`  ap
+                FROM asignatura_profesor  ap
 
                 JOIN asignaturas a 
                     ON a.id  = ap.id_asignatura
                 JOIN profesores p 
                     ON p.id  = ap.id_profesor
                 JOIN users up
-                    ON up.id = ap.id_profesor;
+                    ON up.id = p.id_user;
             SQL;
     }
    

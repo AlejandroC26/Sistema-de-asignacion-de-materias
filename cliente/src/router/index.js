@@ -10,46 +10,40 @@ const routes = [
     component: () => import('../views/Home')
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: () => import('../views/Profile'),
-    meta: { protectedRoute: false }
-  },
-  {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   {
     path: '/estudiantes',
     name: 'Estudiantes',
     component: () => import('../views/Estudiantes'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   {
     path: '/profesores',
     name: 'Profesores',
     component: () => import('../views/Profesores'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   {
     path: '/asignaturas',
     name: 'Asignaturas',
     component: () => import('../views/Asignaturas'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   {
     path: '/seleccion-asignaturas',
     name: 'SeleccionAsignaturas',
     component: () => import('../views/SeleccionAsignaturas'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   {
     path: '/reportes',
     name: 'Reportes',
     component: () => import('../views/Reportes'),
-    meta: { protectedRoute: false }
+    meta: { protectedRoute: true }
   },
   { path: "*", component: () => import('../views/404'), }
 ]

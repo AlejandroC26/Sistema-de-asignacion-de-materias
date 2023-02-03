@@ -6,11 +6,13 @@ import {mapActions, mapMutations, mapState} from 'vuex'
 export default {
   methods:{
 	...mapActions(['readToken']),
+	...mapMutations(['loadSessionUser']),
   },
   computed: {
 	...mapState(['token']),
   },
   mounted(){
+	this.loadSessionUser();
   },
   created(){
 	this.readToken();

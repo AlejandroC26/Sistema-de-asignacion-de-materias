@@ -5,7 +5,7 @@
             <router-link to="/dashboard">
             <div class="logo-nav">
                 <div class="logo-slogan">
-                    <div class="slogan">
+                    <div class="slogan" style="color: #72737d;">
                         INICIO
                     </div>
                 </div>
@@ -16,17 +16,27 @@
                     <span class="open-close btn-close-2 icon-cross"></span>
                 </div>
                 <ul>
-                    <li><router-link to="/dashboard"><span class="icon-home"></span>Home</router-link></li>
-                    <li><router-link to="/profesores">Profesores</router-link></li>
-                    <li><router-link to="/estudiantes">Estudiantes</router-link></li>
-                    <li><router-link to="/asignaturas">Asignaturas</router-link></li>
-                    
+                    <li>
+                        <router-link to="/dashboard"><span class="icon-home"></span>Inicio</router-link>
+                    </li>
+                    <li v-if="sessionUser.permisos.admin">
+                        <router-link to="/profesores">Profesores</router-link>
+                    </li>
+                    <li v-if="sessionUser.permisos.admin">
+                        <router-link to="/estudiantes">Estudiantes</router-link>
+                    </li>
+                    <li v-if="sessionUser.permisos.admin">
+                        <router-link to="/asignaturas">Asignaturas</router-link>
+                    </li>
+                    <li>
+                        <a class="router-link-active" @click="logOut()"><span class="icon-home"></span>Cerrar Sesión</a>
+                    </li>
                 </ul>
             </nav>
             <div class="menu-visible">
                 <nav>
                     <ul>
-                        <li><a href="#" id="profile">{{sessionUser.name}} </a></li>
+                        <li><a href="#" id="profile">{{sessionUser.nombres}} </a></li>
                         <li>
                             <div class="menu_bar open-close">
                                 <a href="#e" class="bt-menu" id="btn-menu">
@@ -39,13 +49,7 @@
             </div>
             <div class="profile-box" id="profile-box">
                 <div class="profile-section">
-                    <div class="user-name"> {{sessionUser.name}} </div>
-                    <div class="user-rol"> {{sessionUser.rol.toUpperCase()}} </div>
-                    <router-link to="/Profile">
-                        <div class="admin-profile">
-                            Administrar Perfíl
-                        </div>
-                    </router-link>
+                    <div class="user-name"> {{sessionUser.nombres}} </div>
                 </div>
                 <div class="profile-section">
                     <div class="logout-profile" @click="logOut()">

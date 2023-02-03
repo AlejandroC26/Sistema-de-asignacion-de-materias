@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Profesor;
+use App\Models\Estudiante;
 
 class AuthController extends Controller
 {
@@ -12,6 +14,33 @@ class AuthController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login','register']]);
+    }
+
+    public function me(Request $request)
+    {
+        $user = Auth::user();
+
+        $profesor = Profesor::where('id_user', $user->id)->first();
+        $estudiante = Estudiante::where('id_user', $user->id)->first();
+
+        $permiso_admin      = false;
+        $permiso_profesor   = false;
+        $permiso_estudiante = false;
+
+        if($user->tipo == 'admin') $permiso_admin      = true; 
+        if($profesor)              $permiso_profesor   = $profesor->id;
+        if($estudiante)            $permiso_estudiante = $estudiante->id;
+
+        
+
+        return response()->json([
+            "data"=>$user,
+            'permisos'=> [
+                "admin"=>$permiso_admin,
+                "profesor"=>$permiso_profesor,
+                "estudiante"=>$permiso_estudiante,
+            ],
+        ]);
     }
 
     public function login(Request $request)
@@ -22,6 +51,7 @@ class AuthController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
 
+
         $token = Auth::attempt($credentials);
         if (!$token) {
             return response()->json([
@@ -31,6 +61,7 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
+
         return response()->json([
                 'status' => 'success',
                 'user' => $user,

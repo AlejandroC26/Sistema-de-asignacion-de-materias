@@ -25,7 +25,7 @@
                             <tr v-for="elemento in carrito" :key="elemento.id">
                                 <td>{{ elemento.nombre }}</td>
                                 <td>{{ elemento.descripcion }}</td>
-                                <td>{{ elemento.area }}</td>
+                                <td>{{ elemento.area_nombre }}</td>
                                 <td>{{ elemento.tipo }}</td>
                                 <td>{{ elemento.creditos }}</td>
                                 <td>{{ elemento.docente.nombre_profesor }}</td>
@@ -39,6 +39,9 @@
                                         @click="asignarCursos()"
                                     >GUARDAR</button>
                                 </td>
+                            </tr>
+                            <tr v-else>
+                                <td colspan="6"><center>No hay materias registradas</center></td>
                             </tr>
                         </tbody>
                     </table>
@@ -159,16 +162,6 @@
                                 <td>{{ elemento.tipo }}</td>
                                 <td>{{ elemento.creditos }}</td>
                                 <td>{{ elemento.nombre_profesor }}</td>
-                            </tr>
-                            <tr v-if="carrito.length > 0">
-                                <td colspan="4" style="text-align:end;"><b>Total</b></td>
-                                <td>{{ creditos }}</td>
-                                <td>
-                                    <button 
-                                        class="save-btn"
-                                        @click="asignarCursos()"
-                                    >GUARDAR</button>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -305,10 +298,10 @@ export default {
 
         asignarCursos() {
             if(this.creditos < 7)
-                return this.launchAlert({type: 'warning', title: '¡Registra 7 créditos!'});
+                return this.launchAlert({type: 'warning', title: '¡Registra mínimo 7 créditos!'});
 
             let json = {
-                id_estudiante: 1,
+                id_estudiante: this.sessionUser.permisos.estudiante,
                 asignaturas: []
             }
 
@@ -321,9 +314,9 @@ export default {
             .then(() => {
                 this.carrito = [];
                 this.cargados = true;
-                listarAsignaturasEstudiante(1);
+                this.listarAsignaturasEstudiante(this.sessionUser.permisos.estudiante);
                 return this.launchAlert({type: 'success', title: '¡Cursos asignados exitosamente!'})
-            }).catch(e => console.log(e.response))
+            }).catch(e => console.log(e))
         }
 
 
@@ -333,7 +326,7 @@ export default {
     },
     mounted(){
         this.listarAsignaturas();
-        this.listarAsignaturasEstudiante(1);
+        this.listarAsignaturasEstudiante(this.sessionUser.permisos.estudiante);
     }
 }
 </script>

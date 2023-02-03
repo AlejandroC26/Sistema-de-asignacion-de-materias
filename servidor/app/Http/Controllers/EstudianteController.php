@@ -116,6 +116,7 @@ class EstudianteController extends Controller
 
             $asignatura_estudiante = DB::table('vista_asignatura_estudiantes')
                 ->where('id_asignatura', $asignatura->id_asignatura)
+                ->where('id_estudiante', $request->id_estudiante)
                 ->first();
 
             if($asignatura_estudiante) array_push($repetidos, $asignatura_estudiante);

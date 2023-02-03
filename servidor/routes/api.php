@@ -23,6 +23,7 @@ use App\Http\Controllers\AsignaturaController;
 Route::controller(AuthController::class)
     ->prefix('auth')
     ->group(function () {
+    Route::get('me', 'me');
     Route::post('login', 'login');
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');

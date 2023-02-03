@@ -5,9 +5,14 @@
         <section class="body-info-section">
             <div class="content-section-info">
                 <Title :title="'Dashboard'"/>
+                <!-- ADMIN - PROFESORES -->
                 <div class="content-section-info">
                     <div class="container-options">
-                        <div class="box" style="--clr:#3498DB">
+                        <div 
+                            class="box" 
+                            style="--clr:#3498DB"
+                            v-if="sessionUser.permisos.admin"
+                        >
                             <router-link to="/profesores">
                                 <div class="box-content">
                                     <div class="icon">
@@ -20,7 +25,11 @@
                                 </div>
                             </router-link>
                         </div>
-                        <div class="box" style="--clr:#5DADE2">
+                        <div 
+                            class="box" 
+                            style="--clr:#5DADE2"
+                            v-if="sessionUser.permisos.profesor || sessionUser.permisos.admin"
+                        >
                             <router-link to="/estudiantes">
                                 <div class="box-content">
                                     <div class="icon">
@@ -36,7 +45,11 @@
                     </div>
                 </div>
                 <div class="container-options mt-1">
-                    <div class="box activity-box" style="--clr:#CB4335">
+                    <div 
+                        class="box activity-box" 
+                        style="--clr:#CB4335"
+                        v-if="sessionUser.permisos.admin || sessionUser.permisos.profesor"
+                    >
                         <router-link to="asignaturas">
                             <div class="box-content">
                                 <div class="icon"><span class="icon-book-reference"></span></div>
@@ -47,7 +60,11 @@
                             </div>
                         </router-link>
                     </div>
-                    <div class="box activity-box" style="--clr:#CB4335">
+                    <div 
+                        class="box activity-box" 
+                        style="--clr:#CB4335"
+                        v-if="sessionUser.permisos.estudiante"
+                    >
                         <router-link to="seleccion-asignaturas">
                             <div class="box-content">
                                 <div class="icon"><span class="icon-books"></span></div>
@@ -59,7 +76,8 @@
                         </router-link>
                     </div>
                 </div>
-                <div class="container-options mt-1">
+                <div class="container-options mt-1"
+                v-if="sessionUser.permisos.admin">
                     <div class="box activity-box" style="--clr:#239B56">
                         <router-link to="reportes">
                             <div class="box-content">

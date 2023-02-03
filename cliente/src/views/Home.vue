@@ -104,7 +104,8 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex';
+import axios from 'axios';
 /* import axios from "axios" */
 import Header from '@/components/MainHeader'
 import Footer from '@/components/MainFooter'
@@ -124,7 +125,34 @@ export default {
 	}
   },
   methods: {
-	...mapActions('auth', ['login']),
+	login(data) {
+		axios.post('http://127.0.0.1:8000/api/auth/login', data)
+		.then(({data}) => {
+			console.log(data)
+			if(data.status === 'success'){
+				this.setToken(data.authorisation.token);
+				localStorage.setItem('token', data.authorisation.token);
+				window.location.href = 'dashboard';
+			}
+		}).catch(e => {
+			if(e) return this.launchAlert({type: 'error', title: 'Correo o contraseña incorrectos!'})
+		})
+	},
+	launchAlert(config){
+        if(!config.timeout) config.timeout = 2500;
+        const Toast = this.$swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: config.timeout,
+        })
+        Toast.fire({
+            icon: config.type,
+            title: config.title,
+            text: config.message,
+        })
+    },
+    ...mapMutations(["setToken"]),
   },
   mounted(){
 	const $ = require('jquery')
