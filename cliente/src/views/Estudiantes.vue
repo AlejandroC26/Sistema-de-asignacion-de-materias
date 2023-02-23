@@ -147,14 +147,14 @@ export default {
             estudiantes: [],
             estudiante: {
                 id: '',
-                documento: '123',
-                nombres: 'Alejandro',
-                telefono: '313',
-                email: 'cubillosalejandro122@gmail.com',
-                direccion: 'Cra 16',
-                ciudad: 'Pitalito',
-                semestre: '3',
-                password: '123',
+                documento: '',
+                nombres: '',
+                telefono: '',
+                email: '',
+                direccion: '',
+                ciudad: '',
+                semestre: '',
+                password: '',
                 id_estudiante: '',
             }
         }

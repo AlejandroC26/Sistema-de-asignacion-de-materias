@@ -178,14 +178,14 @@ export default {
   },
   data: function (){
 		return{
-			nDocumento: '123',
-			sNombres: 'Alejandro',
-			nTelefono: '313',
-			sEmail: 'cubillosalejandro122@gmail.com',
-			sDireccion: 'Cra 16',
-			sCiudad: 'Pitalito',
-			nSemestre: '3',
-			sPassword: '123',
+			nDocumento: '',
+			sNombres: '',
+			nTelefono: '',
+			sEmail: '',
+			sDireccion: '',
+			sCiudad: '',
+			nSemestre: '',
+			sPassword: '',
 
 			bFormRegistro: false,
 
