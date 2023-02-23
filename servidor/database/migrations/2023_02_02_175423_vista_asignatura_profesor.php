@@ -27,7 +27,8 @@ return new class extends Migration
                     a.nombre as nombre_asignatura,
                     a.creditos,
                     ap.id_profesor,
-                    up.nombres as nombre_profesor
+                    up.nombres as nombre_profesor,
+                    ap.estado as estado
                 FROM asignatura_profesor  ap
 
                 JOIN asignaturas a 

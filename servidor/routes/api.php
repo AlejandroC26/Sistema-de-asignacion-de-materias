@@ -35,6 +35,7 @@ Route::controller(UserController::class)
     Route::get('', 'index');
     Route::post('register', 'register');
     Route::post('update/{id}', 'update');
+    Route::post('change-password/{id}', 'changePassword');
 });
 
 Route::controller(EstudianteController::class)
@@ -54,6 +55,8 @@ Route::controller(ProfesorController::class)
     Route::post('register', 'register');
     Route::post('course/assign', 'assignCourse');
     Route::get('/{id}/courses', 'listCourses');
+    Route::post('/course/{id}/update', 'updateAssignedCourse');
+
 });
 
 Route::controller(AsignaturaController::class)
@@ -66,3 +69,5 @@ Route::controller(AsignaturaController::class)
     Route::post('update/{id}', 'update');
     Route::get('/{id}/profesor', 'listTeachers');
 });
+
+Route::get('resumen/pdf', 'App\Http\Controllers\ReporteController@resumenPDF');

@@ -10,6 +10,10 @@ export default new Vuex.Store({
         sessionUser: {
             id: '',
             nombres: '',
+            documento: '',
+            telefono: '',
+            direccion: '',
+            ciudad: '',
             permisos: {
                 admin: false,
                 profesor: false,
@@ -22,14 +26,18 @@ export default new Vuex.Store({
             state.token = payload;
         },
         loadSessionUser(state, payload){
-            if(!state.token) return;
+            if(!state.token && payload.force === false) return;
             axios.get('http://127.0.0.1:8000/api/auth/me', 
             { headers: { "Authorization": "Bearer " + state.token} })
             .then(({data}) => {
                 state.sessionUser.id = data.data.id;
                 state.sessionUser.nombres = data.data.nombres;
+                state.sessionUser.documento = data.data.documento;
+                state.sessionUser.telefono = data.data.telefono;
+                state.sessionUser.direccion = data.data.direccion;
+                state.sessionUser.ciudad = data.data.ciudad;
+                state.sessionUser.email = data.data.email;
                 state.sessionUser.permisos = data.permisos;
-                
             }).catch(e => console.log(e.response))
         }
     },

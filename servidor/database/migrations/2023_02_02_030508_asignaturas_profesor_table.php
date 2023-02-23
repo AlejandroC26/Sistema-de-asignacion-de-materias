@@ -23,6 +23,7 @@ return new class extends Migration
                     ->constrained('asignaturas')
                     ->cascadeOnUpdate()
                     ->cascadeOnDelete();
+            $table->enum('estado', ['activo','inactivo'])->default('activo');
             $table->timestamps();
         });
     }

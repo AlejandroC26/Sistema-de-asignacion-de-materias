@@ -18,7 +18,8 @@
 }
 /* =========BODY CONTAINER=========== */
 .main-container{
-    min-height: calc(100vh - (582.4px + 54px));
+    min-height: calc(100vh - (250px));
+    
 }
 .admin-container{
     min-height: calc(100vh - 115px);

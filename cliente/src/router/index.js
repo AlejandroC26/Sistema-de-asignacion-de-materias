@@ -45,6 +45,12 @@ const routes = [
     component: () => import('../views/Reportes'),
     meta: { protectedRoute: true }
   },
+  {
+    path: '/perfil',
+    name: 'Perfil',
+    component: () => import('../views/Profile'),
+    meta: { protectedRoute: true }
+  },
   { path: "*", component: () => import('../views/404'), }
 ]
 

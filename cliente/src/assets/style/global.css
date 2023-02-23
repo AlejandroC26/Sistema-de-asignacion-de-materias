@@ -18,6 +18,14 @@ body::-webkit-scrollbar-thumb{
 body.swal2-toast-shown .swal2-container.swal2-top-end, body.swal2-toast-shown .swal2-container.swal2-top-right{
 	z-index: 10000;
 }
+/* ===== ROW ============= */
+.row {
+	display: flex;
+	gap: .5rem;
+	justify-content: space-between;
+}
+
+
 .bg-white{
 	padding: 20px 10px;
 	background: #fff;
@@ -195,3 +203,16 @@ button {
 	border: solid 1px rgb(238, 238, 238);
 }
 /* ========================================== */
+.form-input {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.form-input input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: .4rem .5rem;
+	border: 0;
+	box-shadow: 0 0 1px #000000;
+	border-radius: 2px;
+}

@@ -5,168 +5,176 @@
         <section class="body-info-section">
             <div class="content-section-info">
                 <Title :title="'Selección de asignaturas'"/>
+                <div style="display: flex; justify-content: center;" v-if="!bPaginaCargada">
+                    <Loader/>
+                </div>  
+                <div v-else>
+                    <div v-if="!cargados">
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <td colspan="7"><center>Asignaturas registradas</center></td>
+                                </tr>
+                                <tr>
+                                    <td>Nombre</td>
+                                    <td>Descripción</td>
+                                    <td>Area</td>
+                                    <td>Tipo</td>
+                                    <td>Créditos</td>
+                                    <td>Docente</td>
+                                    <td>Acción</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="elemento in carrito" :key="elemento.id">
+                                    <td>{{ elemento.nombre }}</td>
+                                    <td>{{ elemento.descripcion }}</td>
+                                    <td>{{ elemento.area_nombre }}</td>
+                                    <td>{{ elemento.tipo }}</td>
+                                    <td>{{ elemento.creditos }}</td>
+                                    <td>{{ elemento.docente.nombre_profesor }}</td>
+                                    <td><span class="link" @click="onRemoverAsignatura(elemento.id)">Eliminar</span></td>
 
-                <div v-if="!cargados">
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                <td colspan="6"><center>Asignaturas registradas</center></td>
-                            </tr>
-                            <tr>
-                                <td>Nombre</td>
-                                <td>Descripción</td>
-                                <td>Area</td>
-                                <td>Tipo</td>
-                                <td>Créditos</td>
-                                <td>Docente</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="elemento in carrito" :key="elemento.id">
-                                <td>{{ elemento.nombre }}</td>
-                                <td>{{ elemento.descripcion }}</td>
-                                <td>{{ elemento.area_nombre }}</td>
-                                <td>{{ elemento.tipo }}</td>
-                                <td>{{ elemento.creditos }}</td>
-                                <td>{{ elemento.docente.nombre_profesor }}</td>
-                            </tr>
-                            <tr v-if="carrito.length > 0">
-                                <td colspan="4" style="text-align:end;"><b>Total</b></td>
-                                <td>{{ creditos }}</td>
-                                <td>
-                                    <button 
-                                        class="save-btn"
-                                        @click="asignarCursos()"
-                                    >GUARDAR</button>
-                                </td>
-                            </tr>
-                            <tr v-else>
-                                <td colspan="6"><center>No hay materias registradas</center></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </tr>
+                                <tr v-if="carrito.length > 0">
+                                    <td colspan="4" style="text-align:end;"><b>Total</b></td>
+                                    <td colspan="2">{{ creditos }}</td>
+                                    <td>
+                                        <button 
+                                            class="save-btn"
+                                            @click="asignarCursos()"
+                                        >GUARDAR</button>
+                                    </td>
+                                </tr>
+                                <tr v-else>
+                                    <td colspan="6"><center>No hay materias registradas</center></td>
+                                </tr>
+                            </tbody>
+                        </table>
 
-                    <!-- MODAL SELECCIÓN -->
-                    <div style="display: flex; justify-content: center; position: relative;">
-                        <div 
-                            v-if="seleccion"
-                            class="formulario-registro"
-                        >
-                            <p class="titulo">SELECCIONAR PROFESOR</p>
-                            <button class="cross-btn" @click="seleccion=false;">×</button>
-                            <div class="row">
-                                <div class="col">
-                                    <p>Nombre</p>
-                                    <input type="text" v-model="asignatura.nombre" disabled>
+                        <!-- MODAL SELECCIÓN -->
+                        <div style="display: flex; justify-content: center; position: relative;">
+                            <div 
+                                v-if="seleccion"
+                                class="formulario-registro"
+                            >
+                                <p class="titulo">SELECCIONAR PROFESOR</p>
+                                <button class="cross-btn" @click="seleccion=false;">×</button>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Nombre</p>
+                                        <input type="text" v-model="asignatura.nombre" disabled>
+                                    </div>
+                                    <div class="col">
+                                        <p>Tipo</p>
+                                        <input type="text" v-model="asignatura.tipo" disabled>
+                                    </div>
                                 </div>
-                                <div class="col">
-                                    <p>Tipo</p>
-                                    <input type="text" v-model="asignatura.tipo" disabled>
+                                <div class="row">
+                                    <div class="col">
+                                        <p>Créditos</p>
+                                        <input type="number" v-model="asignatura.creditos" disabled>
+                                    </div>
+                                    <div class="col">
+                                        <p>Area</p>
+                                        <input type="text" v-model="asignatura.area_nombre" disabled>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p>Créditos</p>
-                                    <input type="number" v-model="asignatura.creditos" disabled>
-                                </div>
-                                <div class="col">
-                                    <p>Area</p>
-                                    <input type="text" v-model="asignatura.area_nombre" disabled>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p><b>DOCENTES</b></p>
-                                    <div v-if="asignatura.docentes.length > 0">
-                                        <div 
-                                            class="row" 
-                                            style="padding: 0 1.2rem; margin-bottom: .5rem; border-bottom: 2px dashed #4a4a4a;"
-                                            v-for="docente in asignatura.docentes" :key="docente.id"
-                                        >
+                                <div class="row">
+                                    <div class="col">
+                                        <p><b>DOCENTES</b></p>
+                                        <div v-if="asignatura.docentes.length > 0">
                                             <div 
-                                                class="col" 
-                                                style="display: flex; align-items: center;"
-                                            >{{ docente.nombre_profesor }}</div>
-                                            <div class="col" style="display: flex; justify-content: flex-end;">
-                                                <button 
-                                                    class="select-btn"
-                                                    @click="agregarAsignatura(docente)"
-                                                >SELECCIONAR</button>
+                                                class="row" 
+                                                style="padding: 0 1.2rem; margin-bottom: .5rem; border-bottom: 2px dashed #4a4a4a;"
+                                                v-for="docente in asignatura.docentes" :key="docente.id"
+                                            >
+                                                <div 
+                                                    class="col" 
+                                                    style="display: flex; align-items: center;"
+                                                >{{ docente.nombre_profesor }}</div>
+                                                <div class="col" style="display: flex; justify-content: flex-end;">
+                                                    <button 
+                                                        class="select-btn"
+                                                        @click="agregarAsignatura(docente)"
+                                                    >SELECCIONAR</button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div 
+                                            v-else
+                                            style="padding: .5rem 1rem"
+                                        >No hay docentes registrados en esta asignatura</div>
                                     </div>
-                                    <div 
-                                        v-else
-                                        style="padding: .5rem 1rem"
-                                    >No hay docentes registrados en esta asignatura</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- LISTA LAS ASIGNATURAS -->
-                    <div class="contenedor-asignaturas">
-                        <div 
-                            class="asignatura-box"
-                            v-for="asignatura in asignaturas" :key="asignatura.id"
-                        >
-                            <div class="cabecera">
-                                <div class="nombre">{{ asignatura.nombre }}</div>
-                                <div class="creditos">{{ asignatura.creditos }} créditos</div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    {{ asignatura.tipo  }}
+                        <!-- LISTA LAS ASIGNATURAS -->
+                        <div class="contenedor-asignaturas">
+                            <div 
+                                class="asignatura-box"
+                                v-for="asignatura in asignaturas" :key="asignatura.id"
+                            >
+                                <div class="cabecera">
+                                    <div class="nombre">{{ asignatura.nombre }}</div>
+                                    <div class="creditos">{{ asignatura.creditos }} créditos</div>
                                 </div>
-                                <div class="col" style="display: flex; justify-content: flex-end; margin-top: .5rem;">
-                                    {{ asignatura.area_nombre  }}
+                                <div class="row">
+                                    <div class="col">
+                                        {{ asignatura.tipo  }}
+                                    </div>
+                                    <div class="col" style="display: flex; justify-content: flex-end; margin-top: .5rem;">
+                                        {{ asignatura.area_nombre  }}
+                                    </div>
                                 </div>
+                                <div class="descripcion">{{ asignatura.descripcion }}</div>
+                                <div class="mostrar-mas" @click="()=>{
+                                    cargarAsignatura(asignatura)
+                                    listarDocentes(asignatura.id)
+                                }">MOSTRAR DOCENTES</div>
                             </div>
-                            <div class="descripcion">{{ asignatura.descripcion }}</div>
-                            <div class="mostrar-mas" @click="()=>{
-                                cargarAsignatura(asignatura)
-                                listarDocentes(asignatura.id)
-                            }">MOSTRAR DOCENTES</div>
+                        </div>
+                        <!-- PAGINADOR -->
+                        <div style="display: flex; justify-content: flex-end;">
+                            <div class="pagination">
+                                <a 
+                                    href="#" 
+                                    v-for="link in links" :key="generateUUID(link)"
+                                    :class="{'active': link.active}"
+                                    @click="listarAsignaturas(link.url)"
+                                ><span v-html="link.label"></span></a>
+                            </div>
                         </div>
                     </div>
-                    <!-- PAGINADOR -->
-                    <div style="display: flex; justify-content: flex-end;">
-                        <div class="pagination">
-                            <a 
-                                href="#" 
-                                v-for="link in links" :key="generateUUID(link)"
-                                :class="{'active': link.active}"
-                                @click="listarAsignaturas(link.url)"
-                            ><span v-html="link.label"></span></a>
-                        </div>
+                    <div v-else>
+                        <table class="styled-table">
+                            <thead>
+                                <tr>
+                                    <td colspan="6"><center>Tus asignaturas</center></td>
+                                </tr>
+                                <tr>
+                                    <td>Nombre</td>
+                                    <td>Descripción</td>
+                                    <td>Tipo</td>
+                                    <td>Créditos</td>
+                                    <td>Docente</td>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="elemento in mis_asignaturas" :key="elemento.id">
+                                    <td>{{ elemento.nombre_asignatura }}</td>
+                                    <td>{{ elemento.descripcion }}</td>
+                                    <td>{{ elemento.tipo }}</td>
+                                    <td>{{ elemento.creditos }}</td>
+                                    <td>{{ elemento.nombre_profesor }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div v-else>
-                    <table class="styled-table">
-                        <thead>
-                            <tr>
-                                <td colspan="6"><center>Tus asignaturas</center></td>
-                            </tr>
-                            <tr>
-                                <td>Nombre</td>
-                                <td>Descripción</td>
-                                <td>Tipo</td>
-                                <td>Créditos</td>
-                                <td>Docente</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="elemento in mis_asignaturas" :key="elemento.id">
-                                <td>{{ elemento.nombre_asignatura }}</td>
-                                <td>{{ elemento.descripcion }}</td>
-                                <td>{{ elemento.tipo }}</td>
-                                <td>{{ elemento.creditos }}</td>
-                                <td>{{ elemento.nombre_profesor }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
+
             </div>
         </section>
         </div>
@@ -177,6 +185,7 @@
 import Header from '@/components/AdminHeader.vue'
 import Footer from '@/components/AdminFooter.vue'
 import Title from '@/components/page/Title.vue'
+import Loader from '@/components/Loader.vue';
 import {mapState} from 'vuex';
 import axios from 'axios';
 export default {
@@ -184,11 +193,13 @@ export default {
     components: {
         Header,
         Footer,
-        Title
+        Title,
+        Loader
     },
 
     data: function(){
         return {
+            bPaginaCargada: false,
             seleccion: false,
             cargados: false,
 
@@ -252,6 +263,7 @@ export default {
             axios.get(`http://127.0.0.1:8000/api/estudiante/${id}/courses`, 
             { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
             .then(({data}) => {
+                this.bPaginaCargada = true;
                 if(data.length > 0) this.cargados = true;
                 this.mis_asignaturas = data;
             }).catch((e)=> console.log(e.response) )
@@ -294,6 +306,12 @@ export default {
             this.carrito.forEach(element => creditos += element.creditos);
             this.seleccion = false;
             this.creditos = creditos;
+        },
+
+
+        onRemoverAsignatura(id) {
+            const index = this.carrito.findIndex(elemento => elemento.id === id);
+            this.carrito = this.carrito.slice(index-1, index)
         },
 
         asignarCursos() {

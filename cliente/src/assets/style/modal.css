@@ -45,3 +45,100 @@
 .lg-xxl-modal{
     max-width: 1200px;
 }
+
+.formulario-registro{
+    margin: 0 auto;
+    width: 95%;
+    padding: 2rem 1.5rem;
+    padding-top: 4rem;
+    max-width: 750px;
+    box-shadow: inset  0 0 2px #818181,
+                0 0 5px #c9c9c9;
+    border-radius: 1rem;
+    position: absolute;
+    background: #fff;
+
+    -webkit-animation: fade-in-fwd 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+    animation: fade-in-fwd 0.3s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+.formulario-registro .titulo {
+    color: #fff;
+    position: absolute;
+    top: 1.5rem;
+    left: -.7rem;
+    background: #0056a0;
+    padding: .4rem 2.5rem;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+}
+.formulario-registro .cross-btn {
+    background: none;
+    border: 0;
+    font-size: 2rem;
+    color: #818181;
+    position: absolute;
+    right: 1.5rem;
+    top: 1.5rem;
+    cursor: pointer;
+}
+
+.row > .col {
+    width: 100%;
+    box-sizing: border-box;
+}
+.row > .col input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .3rem .5rem;
+    border: 0;
+    box-shadow: 0 0 1px #000000;
+    border-radius: 2px;
+}
+
+.btn-confirm button,
+.btn-actions button {
+    margin-top: 1rem;
+    background: none;
+    border: 0;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: .02rem;
+    color: #4a4a4a;
+    cursor: pointer;
+}
+.btn-confirm.primary button{
+    padding: .3rem .5rem;
+    border: dashed 2px #7f7f7f;
+}
+
+.btn-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+@-webkit-keyframes fade-in-fwd {
+    0% {
+        -webkit-transform: translateZ(-80px);
+                transform: translateZ(-80px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+        opacity: 1;
+    }
+    }
+    @keyframes fade-in-fwd {
+    0% {
+        -webkit-transform: translateZ(-80px);
+                transform: translateZ(-80px);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+        opacity: 1;
+    }
+}

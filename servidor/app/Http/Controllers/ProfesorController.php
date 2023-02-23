@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 
 class ProfesorController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:api');
+    }
+    
     public function index(Request $request)
     {
         $profesores = Profesor::select(
@@ -81,6 +85,17 @@ class ProfesorController extends Controller
             'status' => 'success',
             'message' => 'Asignatura de profesor registrada exitosamente',
             'data' => $asignatura_profesor,
+        ]);
+    }
+
+    public function updateAssignedCourse(Request $request, $id)
+    {
+        $asignatura_profesor = AsignaturaProfesor::find($id);
+        $asignatura_profesor->estado = $request->estado;
+        $asignatura_profesor->save();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Asignatura de profesor actualizada exitosamente'
         ]);
     }
 

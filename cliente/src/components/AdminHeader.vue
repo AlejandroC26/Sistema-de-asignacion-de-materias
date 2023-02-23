@@ -50,6 +50,11 @@
             <div class="profile-box" id="profile-box">
                 <div class="profile-section">
                     <div class="user-name"> {{sessionUser.nombres}} </div>
+                    <router-link to="/perfil">
+                        <div class="admin-profile">
+                            Administrar Perfíl
+                        </div>
+                    </router-link>
                 </div>
                 <div class="profile-section">
                     <div class="logout-profile" @click="logOut()">

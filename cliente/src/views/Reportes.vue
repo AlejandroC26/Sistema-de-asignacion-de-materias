@@ -15,14 +15,21 @@
                 </div>
 
 
-                <div style="display: flex; justify-content: flex-end;">
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button
+                        class="btn-download red"
+                        @click="downloadPDF()"
+                    >
+                        Descargar Resumen PDF
+                    </button>
+
                     <download-excel
                         class="btn-download"
                         :data="asignaturas"
                         :fields="json_fields"
                         name="estudiantes_asignaturas.xls"
                         >
-                        Download Excel
+                        Descargar Reporte
                     </download-excel>
                 </div>
                 <table class="styled-table">
@@ -81,7 +88,7 @@ export default {
                     labels: [],
                     datasets: [
                         {
-                            label: "Número de Estudiantes",
+                            label: "Número de Estudiantes por Profesor",
                             data: [],
                             backgroundColor: "#6cb1ec",
                             borderColor: "#0275d8",
@@ -110,7 +117,7 @@ export default {
                     labels: [],
                     datasets: [
                         {
-                            label: "Número de Estudiantes",
+                            label: "Número de Estudiantes por Asignatura",
                             data: [],
                             backgroundColor: "#d47287",
                             borderColor: "#ce002d",
@@ -157,6 +164,21 @@ export default {
             });
             return uuid;
         },
+        downloadPDF(){
+            axios.get("http://127.0.0.1:8000/api/resumen/pdf", 
+            { 
+                headers: { "Authorization": "Bearer " + localStorage.getItem('token')},
+                responseType: 'blob',
+            })
+            .then(({data})=> {
+                const url = window.URL.createObjectURL(new Blob([data]))
+                const link = document.createElement('a')
+                link.href= url
+                link.setAttribute('download','Resumen.pdf')
+                document.body.appendChild(link)
+                link.click();
+            });
+        },  
         launchAlert(config){
             if(!config.timeout) config.timeout = 2500;
             const Toast = this.$swal.mixin({
@@ -319,5 +341,10 @@ export default {
         background: #ffffff;
         border-radius: 2px;
         cursor: pointer;
+    }
+
+    .btn-download.red{
+        border: solid 2px #d61919;
+        color:#921c1c;
     }
 </style>

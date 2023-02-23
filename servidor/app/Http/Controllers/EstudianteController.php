@@ -7,12 +7,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\Estudiante;
-use App\Models\AsignaturaProfesor;
 use App\Models\AsignaturaEstudiante;
 
 
 class EstudianteController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth:api');
+    }
+
     public function index(Request $request)
     {
         $estudiantes = Estudiante::select(

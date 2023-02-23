@@ -304,11 +304,6 @@ export default {
 }
 </script>
 <style scoped>
-    .row {
-        display: flex;
-        gap: .5rem;
-        justify-content: space-between;
-    }
     .row > .col {
         width: 100%;
         box-sizing: border-box;
@@ -334,6 +329,7 @@ export default {
         position: absolute;
         background: #fff;
     }
+
     .formulario-registro .titulo {
         color: #fff;
         position: absolute;
@@ -370,5 +366,6 @@ export default {
         padding: .3rem .5rem;
         border: dashed 2px #7f7f7f;
     }
+
 
 </style>

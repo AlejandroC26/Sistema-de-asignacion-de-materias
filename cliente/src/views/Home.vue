@@ -22,6 +22,75 @@
 				</svg>
 			</div>
 		</section>
+		<div 
+			v-if="bFormRegistro"
+			style="display: flex;  justify-content: center; position: fixed; top: 10rem; z-index: 100; width: 100%"
+		>
+			<div 
+					class="formulario-registro"
+			>
+					<p class="titulo">Registro de estudiante</p>
+					<button class="cross-btn"
+							@click="()=>{
+									bFormRegistro = false;
+									limpiarFormulario();
+							}">×</button>
+					<div class="row">
+						<FormNumber
+							sLabel="Documento"
+							:value="nDocumento"
+							@updateValor="onSetDocumento($event)"
+						/>
+						<FormText
+							sLabel="Nombres"
+							:value="sNombres"
+							@updateValor="onSetNombres($event)"
+						/>
+						<FormNumber
+							sLabel="Teléfono"
+							:value="nTelefono"
+							@updateValor="onSetTelefono($event)"
+						/>
+					</div>
+					<div class="row">
+						<FormText
+							sLabel="Dirección"
+							:value="sDireccion"
+							@updateValor="onSetDireccion($event)"
+						/>
+						<FormText
+							sLabel="Ciudad"
+							:value="sCiudad"
+							@updateValor="onSetCiudad($event)"
+						/>
+						<FormNumber
+							sLabel="N° Semestre"
+							:value="nSemestre"
+							@updateValor="onSetSemestre($event)"
+						/>
+					</div>
+					<div class="row">
+						<FormText
+							sLabel="Email"
+							:value="sEmail"
+							@updateValor="onSetEmail($event)"
+						/>
+						<FormPassword
+							sLabel="Contraseña"
+							:value="sPassword"
+							@updateValor="onSetPassword($event)"
+						/>
+					</div>
+				<div class="btn-actions">
+					<button @click="()=>{ bFormRegistro = false }">
+						Cancelar
+					</button>
+					<button @click="registrarEstudiante()">
+						Guardar
+					</button>
+				</div>
+			</div>
+		</div>
 		<section class="body-info-section">
 			<div class="content-section-info">
 				<div class="full-container">
@@ -33,7 +102,9 @@
 				</div>
 			</div>
 		</section>
-		<div class="login-wrapper">
+
+
+		<div class="login-wrapper" v-if="!bFormRegistro">
 			<div id="login" class="modal">
 				<a href="#" class="close-modal">
 					<div class="close-icon"></div>
@@ -55,41 +126,21 @@
 				</div>
 				<div class="login-content">
 					<div class="bg-white">
-						<div class="wrapper-form-data pd-1">
-							<div class="input-data">
-								<input
-									type="text"
-									name="email"
-									size="40"
-									maxlength="50"
-									required
-									v-model="user.email"
-								/>
-								<div class="underline"></div>
-								<label>Correo</label>
-							</div>
-						</div>
-						<div class="wrapper-form-data pd-1" style="margin-top: 1rem">
-							<div class="input-data">
-								<input
-									type="password"
-									name="password"
-									size="40"
-									maxlength="50"
-									id="password"
-									required
-									v-model="user.password"
-								/>
-								<div class="underline"></div>
-								<label>Contraseña</label>
-							</div>
-							<div class="show-input">
-								<span class="icon-view-show" id="show-password"></span>
-							</div>
-						</div>
-						<div style="padding: 5px 10px;" v-if="error">
-							<span class="color-red" style="font-weight: bold;">Usuario o contraseña incorrecta</span>
-						</div>
+						<FloatingFormText
+							sLabel="Correo"
+							@updateValor="onSetUserEmail($event)"
+						/>
+						<FloatingFormPassword 
+							sLavel="Contraseña"
+							@updateValor="onSetUserPassword($event)"
+							style="margin-top: 1rem;"
+						/>
+						<p style="text-align: center; margin-top: .8rem;">
+							¿Aún no estás registrado? 
+							<span class="link" @click="()=>{ 
+								bFormRegistro = true;
+							}">Regístrate</span>
+						</p>
 					</div>
 					<div class="buttons-login">
 						<a class="button-cancelar" href="#" rel="modal:close">Cancelar</a>
@@ -107,70 +158,180 @@
 import { mapState, mapMutations } from 'vuex';
 import axios from 'axios';
 /* import axios from "axios" */
-import Header from '@/components/MainHeader'
-import Footer from '@/components/MainFooter'
+import Header from '@/components/MainHeader';
+import Footer from '@/components/MainFooter';
+import FormText from '@/components/form/components/FormText';
+import FormNumber from '@/components/form/components/FormNumber';
+import FormPassword from '@/components/form/components/FormPassword';
+import FloatingFormText from '@/components/form/floating-components/FloatingFormText';
+import FloatingFormPassword from '@/components/form/floating-components/FloatingFormPassword';
 export default {
   name: 'Home',
   components: {
     Header,
     Footer,
+		FormText,
+		FormNumber,
+		FormPassword,
+		FloatingFormText,
+		FloatingFormPassword,
   },
   data: function (){
-	return{
-		user:{
-			email: '',
-			password: '',
-		},
-		error_msg: '',
-	}
+		return{
+			nDocumento: '123',
+			sNombres: 'Alejandro',
+			nTelefono: '313',
+			sEmail: 'cubillosalejandro122@gmail.com',
+			sDireccion: 'Cra 16',
+			sCiudad: 'Pitalito',
+			nSemestre: '3',
+			sPassword: '123',
+
+			bFormRegistro: false,
+
+			user:{
+				email: '',
+				password: '',
+			},
+			error_msg: '',
+		}
   },
   methods: {
-	login(data) {
-		axios.post('http://127.0.0.1:8000/api/auth/login', data)
-		.then(({data}) => {
-			console.log(data)
-			if(data.status === 'success'){
-				this.setToken(data.authorisation.token);
-				localStorage.setItem('token', data.authorisation.token);
-				window.location.href = 'dashboard';
+		// LOGIN
+		onSetEmail(value) {
+			this.sEmail = value;
+		},
+		onSetPassword (value) {
+			this.sPassword = value;
+		},
+		// FORMULARIO
+		onSetNombres(value) {
+			this.sNombres = value;
+		},
+		onSetDocumento(value) {
+			this.nDocumento = value;
+		},
+		onSetTelefono(value) {
+			this.sTelefono = value;
+		},
+		onSetDireccion(value) {
+			this.sDireccion = value;
+		},
+		onSetCiudad(value) {
+			this.sCiudad = value;
+		},
+		onSetSemestre(value) {
+			this.nSemestre = value;
+		},
+		//LOGIN
+		onSetUserEmail(value) {
+			this.user.email = value;
+		},
+		onSetUserPassword (value) {
+			this.user.password = value;
+		},
+
+		limpiarFormulario(){
+				this.bFormRegistro = false;
+				this.nDocumento = '';
+				this.sNombres = '';
+				this.nTelefono = '';
+				this.sEmail = '';
+				this.sDireccion = '';
+				this.sCiudad = '';
+				this.nSemestre = '';
+				this.sPassword = '';
+				this.sIdEstudiante = '';
+		},
+
+		isValidText(data){
+				var regex = new RegExp("^[a-zA-ZÀ-ÿ ]+$");
+				var key = data;
+				if (!regex.test(key)) return false
+				return true;
+		},
+		isValidEmail(email) {
+				let re = /^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i
+				if (re.test(email)) return true
+				else return false
+		},
+		
+		login(data) {
+			axios.post('http://127.0.0.1:8000/api/auth/login', data)
+			.then(({data}) => {
+				console.log(data)
+				if(data.status === 'success'){
+					this.setToken(data.authorisation.token);
+					localStorage.setItem('token', data.authorisation.token);
+					window.location.href = 'dashboard';
+				}
+			}).catch(e => {
+				if(e) return this.launchAlert({type: 'error', title: 'Correo o contraseña incorrectos!'})
+			})
+		},
+		async registrarEstudiante(){
+			let data = {
+				documento: this.nDocumento,
+				nombres: 	 this.sNombres,
+				telefono:  this.nTelefono,
+				email:     this.sEmail,
+				direccion: this.sDireccion,
+				ciudad:    this.sCiudad,
+				semestre:  this.nSemestre,
+				password:  this.sPassword,
 			}
-		}).catch(e => {
-			if(e) return this.launchAlert({type: 'error', title: 'Correo o contraseña incorrectos!'})
-		})
-	},
-	launchAlert(config){
-        if(!config.timeout) config.timeout = 2500;
-        const Toast = this.$swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: config.timeout,
-        })
-        Toast.fire({
-            icon: config.type,
-            title: config.title,
-            text: config.message,
-        })
-    },
+
+
+
+			if(!this.isValidText(data.nombres))
+					return this.launchAlert({type: 'warning', title: '¡El nombre no puede contener carácteres especiales!'})
+
+			if(!this.isValidEmail(data.email))
+					return this.launchAlert({type: 'warning', title: '¡El correo no es válido!'})
+
+			try {
+				console.log(data)
+					let user = await axios.post('http://127.0.0.1:8000/api/user/register', data, 
+					{ headers: { "Authorization": "Bearer " + localStorage.getItem('token')}});
+
+					axios.post('http://127.0.0.1:8000/api/estudiante/register', {
+							id_user: user.data.data.id,
+							semestre: data.semestre
+					}, { headers: { "Authorization": "Bearer " + localStorage.getItem('token')}})
+					.then(() => {
+							this.bFormRegistro = false;
+							this.limpiarFormulario();
+							return this.launchAlert({type: 'success', title: '¡Estudiante registrado!'})
+					})
+					.catch(e => {
+						if(e.response)
+							console.log(e.response)
+						else console.log(e)
+					})
+			} catch (error) {
+					this.launchAlert({type: 'error', title: error.response.data.message})
+					console.log(error.response)
+			}
+		},
+		launchAlert(config){
+			if(!config.timeout) config.timeout = 2500;
+			const Toast = this.$swal.mixin({
+					toast: true,
+					position: 'top-end',
+					showConfirmButton: false,
+					timer: config.timeout,
+			})
+			Toast.fire({
+					icon: config.type,
+					title: config.title,
+					text: config.message,
+			})
+		},
     ...mapMutations(["setToken"]),
   },
   mounted(){
 	const $ = require('jquery')
-	window.$ = $
-	var m_estado = 0;
-	$('#show-password').click(function () {
-		if (m_estado == 0) {
-			$('#password').prop('type', 'text');
-			$(this).removeClass('icon-view-show');
-			$(this).addClass('icon-view-hide');
-			m_estado = 1;
-		} else {
-			$('#password').prop('type', 'password');
-			$(this).removeClass('icon-view-hide');
-			$(this).addClass('icon-view-show');
-			m_estado = 0;
-		}
-	});
+	window.$ = $;
 	const button = document.querySelector('#OpenLogin');
 	const popup = document.querySelector('.login-wrapper');
 	const close = document.querySelector('.close-modal');
@@ -189,9 +350,6 @@ export default {
 		}
 	});
   },
-  computed: {
-	...mapState('auth', ['error']),
-},
 }
 </script>
 
@@ -416,6 +574,7 @@ export default {
 	position: relative;
 	top: 0;
 	z-index: 1000000;
+	border-radius: .5rem;
 }
 #login .logo_sm {
 	height: 80px;
@@ -431,6 +590,9 @@ export default {
 }
 #login .login-content {
 	background-color: #e3f2fd;
+	border-bottom-left-radius: .5rem;
+	border-bottom-right-radius: .5rem;
+
 }
 
 .logo_sm .title-login {

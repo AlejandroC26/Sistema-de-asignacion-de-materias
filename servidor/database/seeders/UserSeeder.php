@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
             'direccion' => 'Cra 17 # 1 - 27',
             'ciudad' => 'Pitalito',
             'email' => 'alex@gmail.com',
-            'password' => Hash::make('123'),
+            'password' => Hash::make('regis'),
         ]);
 
         User::create([ 

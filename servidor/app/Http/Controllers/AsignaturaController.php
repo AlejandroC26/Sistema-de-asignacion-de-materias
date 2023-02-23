@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\DB;
 
 class AsignaturaController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware('auth:api');
+    }
+
     public function index(Request $request)
     {
         $asignaturas = Asignatura::select(
@@ -31,6 +36,7 @@ class AsignaturaController extends Controller
     {
         $asignaturas = DB::table('vista_asignatura_profesor')
             ->where('id_asignatura', $id)
+            ->where('estado', 'activo')
             ->get();
         return response()->json($asignaturas);
     }
